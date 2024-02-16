@@ -4,7 +4,7 @@ all:$(OBJC)
 %: %.c
 	gcc -Wall -g0 -lpthread $^ -o $@
 
-.PHONY:clean rebuild
-clear:
+.PHONY:cleanup rebuild
+cleanup:
 	$(RM) $(OBJC)
-rebuild: clear all
+rebuild: cleanup all
