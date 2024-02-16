@@ -1,0 +1,12 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     client
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _epoll_create, symObjAddr: 0x0, symBinAddr: 0x1000036F4, symSize: 0x50 }
+  - { offsetInCU: 0x131, offset: 0x131, size: 0x8, addend: 0x0, symName: _epoll_create, symObjAddr: 0x0, symBinAddr: 0x1000036F4, symSize: 0x50 }
+  - { offsetInCU: 0x167, offset: 0x167, size: 0x8, addend: 0x0, symName: _epoll_ctl, symObjAddr: 0x50, symBinAddr: 0x100003744, symSize: 0x210 }
+  - { offsetInCU: 0x21B, offset: 0x21B, size: 0x8, addend: 0x0, symName: _epoll_wait, symObjAddr: 0x260, symBinAddr: 0x100003954, symSize: 0x160 }
+  - { offsetInCU: 0x2A5, offset: 0x2A5, size: 0x8, addend: 0x0, symName: _convert_kevent_to_epoll, symObjAddr: 0x3C0, symBinAddr: 0x100003AB4, symSize: 0x34 }
+  - { offsetInCU: 0x2D7, offset: 0x2D7, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x3F4, symBinAddr: 0x100003AE8, symSize: 0x388 }
+  - { offsetInCU: 0x3EB, offset: 0x3EB, size: 0x8, addend: 0x0, symName: __OSSwapInt16, symObjAddr: 0x77C, symBinAddr: 0x100003E70, symSize: 0x24 }
+...
