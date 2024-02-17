@@ -2,7 +2,7 @@ SRCS:=$(wildcard *.c)
 OBJC:=$(patsubst %.c, %, $(SRCS))
 all:$(OBJC)
 %: %.c
-	gcc -Wall -g -lpthread $^ -o $@
+	gcc -Wall -g0 -lpthread $^ -o $@
 
 .PHONY:cleanup rebuild
 cleanup:
