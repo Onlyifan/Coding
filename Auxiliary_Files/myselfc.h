@@ -21,19 +21,23 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/time.h>
-#include <sys/event.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
 
-
 #define ARR_LEN(arr) (sizeof(arr) / sizeof(arr[0]))
-
 #define ARGS_CHECK(argc,num) {if(argc!=num){fprintf(stderr,"args error!\n");return -1;}}
 #define ERROR_CHECK(ret,num,msg) {if(ret==num){perror(msg); return -1;}}
 #define THREAD_ERROR_CHECK(ret,msg) {if(ret!=0){fprintf(stderr,"%s:%s\n",msg,strerror(ret));}};
 
+
+#ifndef __APPLE__
+#include <sys/epoll.h>
+#endif // __APPLE__ 
+
+#ifdef __APPLE__
+#include <sys/event.h>
 // Epoll events
 #define EPOLLIN        0x001
 #define EPOLLPRI       0x002
@@ -111,10 +115,7 @@ int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event) {
             return -1;
     }
 
-    if (kevent(epfd, &kev, 1, NULL, 0, NULL) == -1) {
-        perror("kevent");
-        return -1;
-    }
+    ERROR_CHECK(kevent(epfd, &kev, 1, NULL, 0, NULL), -1, "kevent");
     return 0;
 }
 
@@ -127,12 +128,13 @@ int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
     }
 
     int num_events = kevent(epfd, NULL, 0, (struct kevent *)events, maxevents, timeout >= 0 ? &ts : NULL);
-    if (num_events == -1) {
-        perror("kevent");
-    } else {
-        for (int i = 0; i < num_events; ++i) {
-            convert_kevent_to_epoll((struct kevent *)&events[i], &events[i]);
-        }
+    ERROR_CHECK(num_events, -1, "kevent");
+
+    for (int i = 0; i < num_events; ++i) {
+        convert_kevent_to_epoll((struct kevent *)&events[i], &events[i]);
     }
+
     return num_events;
 }
+
+#endif // __APPLE__
