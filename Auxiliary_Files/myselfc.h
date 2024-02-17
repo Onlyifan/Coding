@@ -32,9 +32,9 @@
 #define THREAD_ERROR_CHECK(ret,msg) {if(ret!=0){fprintf(stderr,"%s:%s\n",msg,strerror(ret));}};
 
 
-#ifndef __APPLE__
+#ifdef __linux__
 #include <sys/epoll.h>
-#endif // __APPLE__ 
+#endif // __linux___ 
 
 #ifdef __APPLE__
 #include <sys/event.h>
