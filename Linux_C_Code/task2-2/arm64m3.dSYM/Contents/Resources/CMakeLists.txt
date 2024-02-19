@@ -1,0 +1,3 @@
+# This is an auto-generated CMakeLists.txt for subdir: task2-2/arm64m3.dSYM/Contents/Resources
+
+# Add executable and source files here as needed...
