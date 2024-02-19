@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/Users/Onlyifan/Coding/Linux_C_Code/day2-19/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/cc  -I/Users/Onlyifan/Coding/Linux_C_Code/day2-19/../../Auxiliary_Files -std=gnu17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -o CMakeFiles/CMakeCCompilerId.dir/CMakeFiles/3.28.3/CompilerIdC/CMakeCCompilerId.c.o -c /Users/Onlyifan/Coding/Linux_C_Code/day2-19/build/CMakeFiles/3.28.3/CompilerIdC/CMakeCCompilerId.c",
+  "file": "/Users/Onlyifan/Coding/Linux_C_Code/day2-19/build/CMakeFiles/3.28.3/CompilerIdC/CMakeCCompilerId.c",
+  "output": "CMakeFiles/CMakeCCompilerId.dir/CMakeFiles/3.28.3/CompilerIdC/CMakeCCompilerId.c.o"
+},
+{
+  "directory": "/Users/Onlyifan/Coding/Linux_C_Code/day2-19/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/cc  -I/Users/Onlyifan/Coding/Linux_C_Code/day2-19/../../Auxiliary_Files -std=gnu17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -o CMakeFiles/test.dir/test.c.o -c /Users/Onlyifan/Coding/Linux_C_Code/day2-19/test.c",
+  "file": "/Users/Onlyifan/Coding/Linux_C_Code/day2-19/test.c",
+  "output": "CMakeFiles/test.dir/test.c.o"
+}
+]

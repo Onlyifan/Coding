@@ -1,0 +1,4 @@
+/Users/Onlyifan/Coding/Linux_C_Code/day2-19/build/CMakeFiles/CMakeCCompilerId.dir
+/Users/Onlyifan/Coding/Linux_C_Code/day2-19/build/CMakeFiles/test.dir
+/Users/Onlyifan/Coding/Linux_C_Code/day2-19/build/CMakeFiles/edit_cache.dir
+/Users/Onlyifan/Coding/Linux_C_Code/day2-19/build/CMakeFiles/rebuild_cache.dir
