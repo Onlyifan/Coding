@@ -1,8 +1,12 @@
 // 使用epoll实现一个基于TCP即时聊天，服务端需要支持断线重连。
 #include <myselfc.h>
 
+#define LISTEN_CONNECT_MAX 50
+#define BUF_SIZE 4096
+#define READY_SET 1024
+
 int main(int argc, char *argv[]){
-    // ./exec 0.0.0.0 1234 
+    // ./exec 0.0.0.0 23333 
     ARGS_CHECK(argc, 3);
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -19,7 +23,7 @@ int main(int argc, char *argv[]){
     ret = bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr));
     ERROR_CHECK(ret, -1, "bind");
 
-    listen(sockfd, 50);
+    listen(sockfd, LISTEN_CONNECT_MAX);
 
     int netfd = -1;
 
@@ -28,10 +32,10 @@ int main(int argc, char *argv[]){
     events.events = EPOLLIN;
     events.data.fd = sockfd;
     epoll_ctl(epfd, EPOLL_CTL_ADD, sockfd, &events);
-    char buf[4096] = {0};
+    char buf[BUF_SIZE] = {0};
 
     printf("Server boot over.\n");
-    struct epoll_event ready_set[1024];
+    struct epoll_event ready_set[READY_SET];
     while(1){
         int ready_num = epoll_wait(epfd, ready_set, ARR_LEN(ready_set), -1);
 
@@ -46,9 +50,16 @@ int main(int argc, char *argv[]){
                 events.events = STDIN_FILENO;
                 events.data.fd = netfd;
                 epoll_ctl(epfd, EPOLL_CTL_ADD, netfd, &events);
+                break;
             }
-            else if(netfd != -1 && ready_set[i].data.fd == netfd){
-                memset(buf, 0, sizeof(buf));
+
+            if(netfd == -1){
+                break;
+            }
+
+            memset(buf, 0, sizeof(buf));
+
+            if(ready_set[i].data.fd == netfd){
                 ssize_t recv_len = recv(netfd, buf, sizeof(buf), 0);
                 ERROR_CHECK(recv_len, -1, "recv");
 
@@ -66,27 +77,27 @@ int main(int argc, char *argv[]){
                 }
 
                 printf("buf = %s\n", buf);
+                break;
             }
-            else if(netfd != -1 && ready_set[i].data.fd == STDIN_FILENO){
-                memset(buf, 0, sizeof(buf));
-                ssize_t read_len = read(STDIN_FILENO, buf, sizeof(buf));
-                ERROR_CHECK(read_len, -1, "read");
 
-                if(read_len == 0){
-                    printf("Kick client.\n");
-                    events.events = EPOLLIN;
-                    events.data.fd = sockfd;
-                    epoll_ctl(epfd, EPOLL_CTL_ADD, sockfd, &events);
-                    epoll_ctl(epfd, EPOLL_CTL_DEL, STDIN_FILENO, NULL);
-                    epoll_ctl(epfd, EPOLL_CTL_DEL, netfd, NULL);
+            // 到这里一定是STDIN就绪
+            ssize_t read_len = read(STDIN_FILENO, buf, sizeof(buf));
+            ERROR_CHECK(read_len, -1, "read");
 
-                    close(netfd);
-                    netfd = -1;
-                    break;
-                }
+            if(read_len == 0){
+                printf("Kick client.\n");
+                events.events = EPOLLIN;
+                events.data.fd = sockfd;
+                epoll_ctl(epfd, EPOLL_CTL_ADD, sockfd, &events);
+                epoll_ctl(epfd, EPOLL_CTL_DEL, STDIN_FILENO, NULL);
+                epoll_ctl(epfd, EPOLL_CTL_DEL, netfd, NULL);
 
-                send(netfd, buf, strlen(buf), 0);
+                close(netfd);
+                netfd = -1;
+                break;
             }
+
+            send(netfd, buf, strlen(buf), 0);
         }
     }
 

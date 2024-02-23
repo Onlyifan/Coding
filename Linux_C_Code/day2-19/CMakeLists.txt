@@ -26,7 +26,7 @@ foreach(SRC_FILE ${ALL_SRCS})
     set_target_properties(${EXE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${EXECUTABLE_OUTPUT_PATH}")
 
     # 指定包含目录（如果需要的话）
-    #    target_include_directories(${EXE_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../Auxiliary_Files")
+    #target_include_directories(${EXE_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../Auxiliary_Files")
 
     # 如果有链接库等依赖，这里添加相应的target_link_libraries命令
 endforeach()

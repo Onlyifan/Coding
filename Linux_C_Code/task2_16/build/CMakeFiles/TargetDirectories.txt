@@ -1,7 +1,0 @@
-/Users/Onlyifan/Coding/Linux_C_Code/task2_16/build/CMakeFiles/CMakeCCompilerId.dir
-/Users/Onlyifan/Coding/Linux_C_Code/task2_16/build/CMakeFiles/client.dir
-/Users/Onlyifan/Coding/Linux_C_Code/task2_16/build/CMakeFiles/server_support_reconnect.dir
-/Users/Onlyifan/Coding/Linux_C_Code/task2_16/build/CMakeFiles/aqiang.dir
-/Users/Onlyifan/Coding/Linux_C_Code/task2_16/build/CMakeFiles/azhen_reconnect.dir
-/Users/Onlyifan/Coding/Linux_C_Code/task2_16/build/CMakeFiles/edit_cache.dir
-/Users/Onlyifan/Coding/Linux_C_Code/task2_16/build/CMakeFiles/rebuild_cache.dir

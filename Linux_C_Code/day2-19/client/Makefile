@@ -13,7 +13,7 @@ SRC_PATH := src
 DBG_PATH := debug
 
 # compile macros
-TARGET_NAME := server
+TARGET_NAME := client
 ifeq ($(OS),Windows_NT)
 	TARGET_NAME := $(addsuffix .exe,$(TARGET_NAME))
 endif
@@ -37,7 +37,7 @@ default: makedir all
 
 # non-phony targets
 $(TARGET): $(OBJ)
-	$(CC) -o $@ $(OBJ) $(CFLAGS) -lepoll
+	$(CC) -o $@ $(OBJ) $(CFLAGS)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c*
 	$(CC) $(COBJFLAGS) -o $@ $<
@@ -46,7 +46,7 @@ $(DBG_PATH)/%.o: $(SRC_PATH)/%.c*
 	$(CC) $(COBJFLAGS) $(DBGFLAGS) -o $@ $<
 
 $(TARGET_DEBUG): $(OBJ_DEBUG)
-	$(CC) $(CFLAGS) $(DBGFLAGS) $(OBJ_DEBUG) -o $@ -lepoll
+	$(CC) $(CFLAGS) $(DBGFLAGS) $(OBJ_DEBUG) -o $@
 
 # phony rules
 .PHONY: makedir
