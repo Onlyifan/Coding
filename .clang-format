@@ -1,0 +1,63 @@
+---
+# 代码格式化的基础样式
+# 可选选项: Google, Chromium, Mozilla, WebKit, LLVM, Microsoft, GNU, Java, JavaScript, CppCoreGuidelines
+BasedOnStyle: LLVM
+
+  # 单行最大字符数, 默认为80
+ColumnLimit: 80
+
+  # 缩进宽度
+IndentWidth: 4
+
+  # 制表符所代表的空格数
+TabWidth: 4
+
+
+  # 设置访问修饰符（public, protected, private）前的缩进
+  # 可选选项: true/false
+IndentAccessModifiers: false
+
+  # 类构造函数的初始化列表按每个成员变量一行
+  # 可选选项: true/false
+BreakConstructorInitializersBeforeComma: true
+
+  # 是否使用制表符进行缩进
+  # 可选选项: Always, Never, ForIndentation
+UseTab: Never
+
+  # 控制短函数变为单行排版
+  # 可选选项: All, None, Empty, Inline
+AllowShortFunctionsOnASingleLine: Empty
+
+  # 大括号的换行方式
+  # 可选选项：Attach, Linux, Mozilla, Stroustrup, Allman, GNU, WebKit
+BreakBeforeBraces: Attach
+
+  # 是否对#include排序
+  # 可选选项: true/false
+SortIncludes: true
+
+  # 命名空间内部的缩进方式
+  # NamespaceIndentation 的选项：None, Inner, All
+NamespaceIndentation: None
+
+  # 函数调用的括号前是否添加空格
+  # 可选选项: Never, Always, ControlStatements
+SpaceBeforeParens: ControlStatements
+
+  # ()括号内是否添加空格
+  # 可选选项: true/false
+SpaceInEmptyParentheses: true
+
+  # <>括号内是否添加空格
+  # 可想选项: true/false
+SpacesInAngles: false
+
+PenaltyBreakTemplateDeclaration: 0
+
+  # {}括号中内容的对齐方式
+  # 可选选项: DontAlign, Align, AlwaysBreak
+AlignAfterOpenBracket: Align
+
+  # 保留的最大连续空行数
+MaxEmptyLinesToKeep: 2
