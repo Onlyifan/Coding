@@ -1,3 +1,0 @@
-# This is an auto-generated CMakeLists.txt for subdir: task1-26/problem4_restore
-
-# Add executable and source files here as needed...

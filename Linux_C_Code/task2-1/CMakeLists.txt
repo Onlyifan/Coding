@@ -1,3 +1,0 @@
-# This is an auto-generated CMakeLists.txt for subdir: task2-1
-
-# Add executable and source files here as needed...
