@@ -4,14 +4,13 @@
 BasedOnStyle: LLVM
 
   # 单行最大字符数, 默认为80
-ColumnLimit: 80
+ColumnLimit: 100
 
   # 缩进宽度
 IndentWidth: 4
 
   # 制表符所代表的空格数
 TabWidth: 4
-
 
   # 设置访问修饰符（public, protected, private）前的缩进
   # 可选选项: true/false
