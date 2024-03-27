@@ -57,20 +57,21 @@ class Solution1 {
 class Solution {
   public:
     int jump(vector<int> &nums) {
-        int index = -1;
-        int count = -1;
+        int index = 0;
+        int count = 0;
         int maxIndex = 0;
+        int size = nums.size( ) - 2;
         for (;;) {
+            if (maxIndex + 1 >= nums.size( )) {
+                return count;
+            }
 
             int tmpIndex = maxIndex;
             while (index <= maxIndex) {
                 tmpIndex = max(tmpIndex, index + nums[index]);
                 ++index;
-
-                if (tmpIndex + 1 >= nums.size( )) {
-                    return count;
-                }
             }
+
             ++count;
             maxIndex = tmpIndex;
         }

@@ -22,8 +22,8 @@ template <typename T, typename Compare = std::less<T>> class HeapSort {
 
 template <typename T, typename Compare>
 HeapSort<T, Compare>::HeapSort(T *arr, size_t size)
-    : _vec(arr, arr + size)
-    , _cmp(Compare( )) {}
+    : _vec(arr, arr + size) {}
+// , _cmp(Compare( )) {}
 
 
 template <typename T, typename Compare> void HeapSort<T, Compare>::print( ) {
