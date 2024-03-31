@@ -5,6 +5,7 @@
 // 4 ifs ofs都要记得调用close()
 
 #include <algorithm>
+#include <chrono>
 #include <ctype.h>
 #include <fstream>
 #include <iostream>
@@ -51,8 +52,7 @@ class Dictionary {
 };
 
 void Dictionary::insertWord(const string &str) {
-    vector<Record>::iterator it =
-        std::find(_dict.begin( ), _dict.end( ), Record(str));
+    vector<Record>::iterator it = std::find(_dict.begin( ), _dict.end( ), Record(str));
 
     if (it != _dict.end( )) {
         ++it->_frequency;
@@ -126,13 +126,19 @@ int main(int argc, char *argv[]) {
 
     Dictionary dict;
 
-    int currentTime = time(NULL);
+    auto begin = std::chrono::high_resolution_clock::now( );
+    auto duration = begin.time_since_epoch( );
+    auto millis_begin = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count( );
+    std::cout << "当前时间（毫秒）：" << millis_begin << std::endl;
     dict.read(argv[1]);
+    auto current = std::chrono::high_resolution_clock::now( );
+    duration = current.time_since_epoch( );
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count( );
 
-    cout << "read consume " << time(NULL) - currentTime << "s." << endl;
-    currentTime = time(NULL);
+    std::cout << "消耗时间（毫秒）：" << millis - millis_begin << std::endl;
+
+
     dict.store("Dictionary.txt");
-    cout << "store consume " << time(NULL) - currentTime << "s." << endl;
 
 
     return 0;

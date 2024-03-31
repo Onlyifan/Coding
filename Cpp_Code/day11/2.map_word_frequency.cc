@@ -1,10 +1,10 @@
+#include <chrono>
 #include <ctype.h>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
-#include <time.h>
 #include <utility>
 
 using std::cout;
@@ -98,10 +98,19 @@ int main(int argc, char *argv[]) {
     Dictionary dict;
 
 
-    time_t currentTime = time(NULL);
+    auto begin = std::chrono::high_resolution_clock::now( );
+    auto duration = begin.time_since_epoch( );
+    auto millis_begin = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count( );
+    std::cout << "当前时间（毫秒）：" << millis_begin << std::endl;
     dict.read(argv[1]);
+    auto current = std::chrono::high_resolution_clock::now( );
+    duration = current.time_since_epoch( );
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count( );
+
+    std::cout << "消耗时间（毫秒）：" << millis - millis_begin << std::endl;
+
+
     dict.store("Dictionary.txt");
-    cout << "consume " << time(NULL) - currentTime << " s." << endl;
 
     return 0;
 }

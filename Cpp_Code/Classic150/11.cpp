@@ -33,8 +33,8 @@
 #include <vector>
 using namespace std;
 
-
-class Solution {
+// 排序？等通知吧你
+class Solution1 {
   public:
     int hIndex(vector<int> &citations) {
         sort(citations.begin( ), citations.end( ), std::greater<int>( ));
@@ -44,5 +44,68 @@ class Solution {
             }
         }
         return 0;
+    }
+};
+
+// 计数排序
+class Solution2 {
+  public:
+    int hIndex(vector<int> &citations) {
+        vector<int> hCounts(1 + citations.size( ));
+        for (const auto &hindex : citations) {
+            if (hindex < citations.size( )) {
+                ++hCounts[hindex];
+            } else {
+                ++hCounts.back( );
+            }
+        }
+
+        int accumulation = 0;
+
+        for (int i = citations.size( ); i != 0; --i) {
+            accumulation += hCounts[i];
+            if (accumulation >= i) {
+                return i;
+            }
+        }
+        return 0;
+    }
+};
+
+
+// 二分查找 *****
+
+class Solution {
+  public:
+    int hIndex(vector<int> &citations) {
+
+        int left = 0;
+        int right = citations.size( );
+
+        for (;;) {
+            // 这里一定要 + 1，不然hIndex最后会恒等于left，死循环了
+            int hIndex = (right + left + 1) >> 1;
+
+            int count = 0;
+            for (const int &c : citations) {
+                if (c >= hIndex) {
+                    ++count;
+                }
+            }
+
+            if (hIndex == count) {
+                return hIndex;
+            }
+
+            if (hIndex < count) {
+                left = hIndex;
+            } else {
+                right = hIndex - 1;
+            }
+
+            if (left == right) {
+                return left;
+            }
+        }
     }
 };

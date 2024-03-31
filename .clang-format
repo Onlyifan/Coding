@@ -26,7 +26,7 @@ UseTab: Never
 
   # 控制短函数变为单行排版
   # 可选选项: All, None, Empty, Inline
-AllowShortFunctionsOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Inline
 
   # 大括号的换行方式
   # 可选选项：Attach, Linux, Mozilla, Stroustrup, Allman, GNU, WebKit

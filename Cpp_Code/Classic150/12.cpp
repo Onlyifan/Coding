@@ -16,7 +16,7 @@
 #include <map>
 #include <memory>
 #include <numeric>
-#include <optional> 
+#include <optional>
 #include <queue>
 #include <regex>
 #include <set>
@@ -35,22 +35,40 @@ using namespace std;
 
 
 class RandomizedSet {
-public:
-    RandomizedSet() {
+  public:
+    RandomizedSet( ) {}
 
-    }
-    
     bool insert(int val) {
+        bool result = _hashTable.emplace(val, _indexToVal.size( )).second;
+        if (result == true) {
+            _indexToVal.emplace_back(val);
+        }
 
+        return result;
     }
-    
+
     bool remove(int val) {
+        auto it = _hashTable.find(val);
+        if (it == _hashTable.end( )) {
+            return false;
+        }
 
-    }
-    
-    int getRandom() {
+        _indexToVal[it->second] = _indexToVal.back( );
+        _hashTable[_indexToVal.back( )] = it->second;
 
+        _indexToVal.pop_back( );
+        _hashTable.erase(it);
+
+        return true;
     }
+
+    int getRandom( ) {
+        return _indexToVal[rand( ) % _indexToVal.size( )];
+    }
+
+  private:
+    unordered_map<int, int> _hashTable;
+    vector<int> _indexToVal;
 };
 
 /**

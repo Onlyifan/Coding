@@ -62,12 +62,12 @@ void HeapSort<T, Compare>::heapAdjust(size_t start, size_t end) {
 }
 
 template <typename T, typename Compare> void HeapSort<T, Compare>::sort( ) {
-    for (int i = _vec.size( ) / 2 - 1; i >= 0; --i) {
+    for (size_t i = _vec.size( ) / 2 - 1; i >= 0; --i) {
         heapAdjust(i, _vec.size( ));
         cout << "a sort" << endl;
     }
 
-    for (int i = _vec.size( ) - 1; i > 0; --i) {
+    for (size_t i = _vec.size( ) - 1; i > 0; --i) {
         std::swap(_vec[0], _vec[i]);
         heapAdjust(0, i);
     }
