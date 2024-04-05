@@ -13,7 +13,7 @@ class Query_base {
     friend class Query;
 
   protected:
-    // virtual ~Query_base( ) = default;
+    virtual ~Query_base( ) = default;
 
   private:
     virtual QueryResult eval(const TextQuery &) const = 0;
@@ -28,12 +28,8 @@ class Query {
 
   public:
     Query(const std::string &);
-    QueryResult eval(const TextQuery &tq) const {
-        return _pBase->eval(tq);
-    }
-    std::string rep( ) const {
-        return _pBase->rep( );
-    }
+    QueryResult eval(const TextQuery &tq) const { return _pBase->eval(tq); }
+    std::string rep( ) const { return _pBase->rep( ); }
 
   private:
     Query(std::shared_ptr<Query_base> pBase)
@@ -55,13 +51,9 @@ class WordQuery : public Query_base {
         : _word(str) {}
 
   private:
-    QueryResult eval(const TextQuery &tq) const {
-        return tq.query(_word);
-    }
+    QueryResult eval(const TextQuery &tq) const { return tq.query(_word); }
 
-    std::string rep( ) const {
-        return _word;
-    }
+    std::string rep( ) const { return _word; }
 
   private:
     std::string _word;
@@ -78,9 +70,7 @@ class NotQuery : public Query_base {
         : _query(q) {}
 
     QueryResult eval(const TextQuery &) const;
-    std::string rep( ) const {
-        return "~(" + _query.rep( ) + ")";
-    }
+    std::string rep( ) const { return "~(" + _query.rep( ) + ")"; }
 
   private:
     Query _query;

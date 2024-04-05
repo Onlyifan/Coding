@@ -16,7 +16,7 @@
 #include <map>
 #include <memory>
 #include <numeric>
-#include <optional> 
+#include <optional>
 #include <queue>
 #include <regex>
 #include <set>
@@ -33,6 +33,24 @@
 #include <vector>
 using namespace std;
 
-int main(){
-    for_each()
-}
+
+class ProductA;
+class ProductB;
+class ConcreteProductA1;
+class ConcreteProductB1;
+
+// 抽象工厂接口
+class AbstractFactory {
+  public:
+    virtual ~AbstractFactory( ) {}
+    virtual ProductA *createProductA( ) = 0;
+    virtual ProductB *createProductB( ) = 0;
+};
+
+// 具体工厂类
+class ConcreteFactory1 : public AbstractFactory {
+  public:
+    ProductA *createProductA( ) override { return nullptr; }
+
+    ProductB *createProductB( ) override { return nullptr; }
+};
