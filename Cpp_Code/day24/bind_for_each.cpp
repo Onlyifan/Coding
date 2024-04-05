@@ -37,7 +37,8 @@ using namespace std::placeholders;
 
 class M {
   public:
-    M(int m): data(m) {}
+    M(int m)
+        : data(m) {}
     void print( ) const { std::cout << "Data: " << data << std::endl; }
     int data;
 };
@@ -53,10 +54,12 @@ int main( ) {
 
     // function<void(M)> func = bind(&M::print, _1);
     // function<void(M *)> func = bind(&M::print, _1);
-    auto func = bind(&M::print, _1);
-    func(tmp);
-    func(&tmp);
-    std::for_each(vecM.begin( ), vecM.end( ), func);
+    // auto func = bind(&M::print, _1);
+    auto func1 = bind(&M::print, tmp);
+    auto func2 = bind(&M::print, &tmp);
+    // func(tmp);
+    // func(&tmp);
+    // std::for_each(vecM.begin( ), vecM.end( ), func);
 
     return 0;
 }

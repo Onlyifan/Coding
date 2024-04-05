@@ -16,7 +16,7 @@
 #include <map>
 #include <memory>
 #include <numeric>
-#include <optional>
+#include <optional> 
 #include <queue>
 #include <regex>
 #include <set>
@@ -34,16 +34,4 @@
 using namespace std;
 
 
-class T {};
-
-void func(string &&op) {
-    string r = op;
-    string *r1 = &op;
-    string r2 = std::move(op);
-}
-
-int main( ) {
-    func(string("aa"));
-    string aa("aa");
-    func(aa);
-}
+pthread_mutex_t a;
