@@ -36,20 +36,18 @@ using namespace std;
 
 class Solution {
   public:
-    bool isSubsequence(string s, string t) {
-        if (0 == s.size( )) {
-            return true;
-        }
-        int index = 0;
-        for (const char &c : t) {
-            if (c == s[index]) {
-                ++index;
-                if (index == s.size( )) {
-                    return true;
-                }
+    vector<int> twoSum(vector<int> &nums, int target) {
+        unordered_map<int, int> diff;
+
+        for (int i = 0; i != nums.size( ); ++i) {
+            auto it = diff.find(nums[i]);
+            if (it == diff.end( )) {
+                diff.emplace(make_pair(target - nums[i], i));
+            } else {
+                return {i, it->second};
             }
         }
 
-        return false;
+        return {0, 0};
     }
 };

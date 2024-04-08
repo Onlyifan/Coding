@@ -16,7 +16,7 @@
 #include <map>
 #include <memory>
 #include <numeric>
-#include <optional>
+#include <optional> 
 #include <queue>
 #include <regex>
 #include <set>
@@ -34,22 +34,8 @@
 using namespace std;
 
 
-class Solution {
-  public:
-    bool isSubsequence(string s, string t) {
-        if (0 == s.size( )) {
-            return true;
-        }
-        int index = 0;
-        for (const char &c : t) {
-            if (c == s[index]) {
-                ++index;
-                if (index == s.size( )) {
-                    return true;
-                }
-            }
-        }
+class aa;
 
-        return false;
-    }
-};
+vector<aa> a;
+array<aa, 3> ee;
+
