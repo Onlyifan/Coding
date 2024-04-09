@@ -61,7 +61,6 @@ class Solution {
             }
         }
 
-
         for (auto it = numMap.begin( ); it != numMap.end( );) {
             int fixNum = it->first;
 
@@ -86,12 +85,11 @@ class Solution {
             }
         }
 
-
         return result;
     }
 };
 
-
+// 666
 class Solution001 {
   public:
     vector<vector<int>> threeSum(vector<int> &nums) {
@@ -105,35 +103,51 @@ class Solution001 {
         vector<int> sortedNums;
         sortedNums.reserve(numMap.size( ));
 
+        auto zeroIt = numMap.find(0);
+
+        if (zeroIt != numMap.end( )) {
+
+            if (zeroIt->second > 2) {
+                result.push_back({0, 0, 0});
+            }
+            zeroIt->second = 1;
+        }
+
+        if (numMap.begin( )->first >= 0 && numMap.rbegin( )->first <= 0) {
+            return result;
+        }
+
         for (auto &elem : numMap) {
 
-            sortedNums.push_back(elem.first);
+            sortedNums.emplace_back(elem.first);
             if (elem.second == 1) {
                 continue;
             }
 
             if (numMap.count(-2 * elem.first)) {
-                if (elem.first == 0) {
-                    if (elem.second > 2) {
-                        result.push_back({0, 0, 0});
-                    }
-                    continue;
-                }
-
                 result.push_back({elem.first, elem.first, -2 * elem.first});
             }
         }
 
 
+        int endIndex = sortedNums.size( ) - 1;
         for (int i = 0; i + 2 < sortedNums.size( ); ++i) {
+            int fixNum = sortedNums[i];
             int left = i + 1;
-            int right = sortedNums.size( ) - 1;
+            int right = endIndex;
 
+            if (fixNum + sortedNums[right] + sortedNums[right - 1] < 0) {
+                continue;
+            }
+
+            if (fixNum + sortedNums[left] + sortedNums[left + 1] > 0) {
+                break;
+            }
 
             while (left < right) {
-                int sum = sortedNums[i] + sortedNums[left] + sortedNums[right];
+                int sum = fixNum + sortedNums[left] + sortedNums[right];
                 if (sum == 0) {
-                    result.push_back({sortedNums[left++], sortedNums[i], sortedNums[right--]});
+                    result.push_back({sortedNums[left++], fixNum, sortedNums[right--]});
                     continue;
                 } else if (sum > 0) {
                     --right;
@@ -159,7 +173,7 @@ class Solution1212 {
 
         for (int i = 0; i + 2 < nums.size( );) {
 
-            if (nums[i] > 0) {
+            if (nums[i] + nums[i + 1] + nums[i + 2] > 0) {
                 break;
             }
 
@@ -172,6 +186,70 @@ class Solution1212 {
 
                 if (sum == 0) {
                     result.push_back({nums[left], nums[i], nums[right]});
+                    biggerIndex(nums, left);
+                    smallerIndex(nums, right);
+                    continue;
+                } else if (sum > 0) {
+                    smallerIndex(nums, right);
+                } else {
+                    biggerIndex(nums, left);
+                }
+            }
+
+            biggerIndex(nums, i);
+        }
+
+
+        return result;
+    }
+
+    void biggerIndex(const vector<int> &nums, int &index) {
+        int num = nums[index];
+        do {
+            ++index;
+        } while (nums.size( ) != index && num == nums[index]);
+    }
+
+
+    void smallerIndex(const vector<int> &nums, int &index) {
+        int num = nums[index];
+        do {
+            --index;
+        } while (-1 != index && num == nums[index]);
+    }
+};
+
+
+class Solution_nofunc {
+  public:
+    vector<vector<int>> threeSum(vector<int> &nums) {
+
+        vector<vector<int>> result;
+        sort(nums.begin( ), nums.end( ));
+
+        int endIndex = nums.size( ) - 1;
+
+        for (int i = 0; i + 2 < nums.size( );) {
+            int fixNum = nums[i];
+
+
+            int left = i + 1;
+            int right = endIndex;
+
+            if (fixNum + nums[left] + nums[left + 1] > 0) {
+                break;
+            }
+
+            if (fixNum + nums[right] + nums[right - 1] < 0) {
+                biggerIndex(nums, fixNum);
+                continue;
+            }
+
+            while (left < right) {
+                int sum = fixNum + nums[left] + nums[right];
+
+                if (sum == 0) {
+                    result.push_back({nums[left], fixNum, nums[right]});
                     biggerIndex(nums, left);
                     smallerIndex(nums, right);
                     continue;
