@@ -12,9 +12,8 @@ class Solution {
         array<bool, 123> alpha;
         while (right != s.size( )) {
             while (alpha[s[right]] == true) {
-                alpha[s[--left]] = false;
+                alpha[s[++left]] = false;
             }
-
 
             alpha[s[right]] = true;
             maxLen = max(maxLen, right - left);
