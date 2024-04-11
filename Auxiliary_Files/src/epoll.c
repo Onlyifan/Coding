@@ -1,57 +1,48 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/epoll.h>
 #include <time.h>
 
-#define ERROR_CHECK(ret, num, msg)                                                                 \
+#define KQUEUE_ERROR_CHECK(ret, num, msg)                                                          \
     {                                                                                              \
         if (ret == num) {                                                                          \
             perror(msg);                                                                           \
-            return -1;                                                                             \
+            exit(EXIT_FAILURE);                                                                    \
         }                                                                                          \
     }
 
-// 辅助函数：将kevent的udata转换为epoll_event.data
-static inline void convert_kevent_to_epoll(struct kevent *kev, struct epoll_event *ev) {
-    ev->events = kev->fflags;
-    ev->data.ptr = kev->udata;
-}
-
 int epoll_create(int size) {
-    int kq = kqueue( );
-    if (kq == -1) {
-        perror("kqueue");
-        exit(EXIT_FAILURE);
-    }
-    return kq;
+    return kqueue( );
+}
+int epoll_create1(int flags) {
+    return kqueue( );
 }
 
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event) {
-    struct kevent kev;
+    struct kevent kev[2];
 
-    switch (op) {
-    case EPOLL_CTL_ADD:
-        EV_SET(&kev, fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, event->data.ptr); // 使用用户数据
-        if (event->events & EPOLLET) { // 边缘触发（Edge Triggered）
-            kev.flags |= EV_CLEAR;     // 需要手动清理事件状态
-        }
-        break;
-    case EPOLL_CTL_MOD:
-        // 在kqueue中，修改监听事件通常需要先删除再添加
-        epoll_ctl(epfd, EPOLL_CTL_DEL, fd, event);
-        EV_SET(&kev, fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, event->data.ptr);
-        break;
-    case EPOLL_CTL_DEL:
-        EV_SET(&kev, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-        break;
-    default:
+    if ((!event && op != EPOLL_CTL_DEL) ||
+        (op != EPOLL_CTL_ADD && op != EPOLL_CTL_MOD && op != EPOLL_CTL_DEL)) {
         errno = EINVAL;
         return -1;
     }
 
-    ERROR_CHECK(kevent(epfd, &kev, 1, NULL, 0, NULL), -1, "kevent");
-    return 0;
+    switch (op) {
+    case EV_DELETE:
+        EV_SET(&kev[0], fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+        EV_SET(&kev[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+        return kevent(epfd, kev, 2, NULL, 0, NULL);
+
+    case EV_ADD:
+
+        EV_SET(&kev[0], fd, EVFILT_READ, event->events & EPOLLIN ? EV_ADD : EV_DISABLE, 0, 0,
+               event->data.ptr);
+        EV_SET(&kev[1], fd, EVFILT_WRITE, event->events & EPOLLOUT ? EV_ADD : EV_DISABLE, 0, 0,
+               event->data.ptr);
+    }
+    return kevent(epfd, kev, 2, NULL, 0, NULL);
 }
 
 int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout) {
@@ -61,13 +52,21 @@ int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
         ts.tv_nsec = (timeout % 1000) * 1000000;
     }
 
-    int num_events =
+    int ready_events =
         kevent(epfd, NULL, 0, (struct kevent *)events, maxevents, timeout >= 0 ? &ts : NULL);
-    ERROR_CHECK(num_events, -1, "kevent");
 
-    for (int i = 0; i < num_events; ++i) {
-        convert_kevent_to_epoll((struct kevent *)&events[i], &events[i]);
+    for (int i = 0; i != ready_events; ++i) {
+        if (((struct kevent *)(events + i))->filter == EVFILT_READ) {
+            printf("in jiuxu\n");
+            events[i].events = EPOLLIN;
+        } else if (((struct kevent *)(events + i))->filter == EVFILT_WRITE) {
+            printf("out jiuxu\n");
+            events[i].events = EPOLLOUT;
+        }
+        printf("cont %d\n", events[i].events);
+
+        (events + i)->data.ptr = ((struct kevent *)(events + i))->udata;
     }
 
-    return num_events;
+    return ready_events;
 }
