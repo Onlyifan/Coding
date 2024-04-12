@@ -7,3 +7,4 @@ clang -g -dynamiclib epoll.o  -o libepoll.dylib
 // 静态库
 clang -c -fPIC -Ofast -ffast-math -flto -o epoll.o epoll.c
 ar -rcs libepoll.a epoll.o
+mv libepoll.a ../lib/
