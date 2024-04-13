@@ -14,8 +14,7 @@ int epoll_create1(int flags) {
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event) {
     struct kevent kev[2];
 
-    if ((!event && op != EPOLL_CTL_DEL) ||
-        (op != EPOLL_CTL_ADD && op != EPOLL_CTL_MOD && op != EPOLL_CTL_DEL)) {
+    if ((!event && op != EPOLL_CTL_DEL) || (op != EPOLL_CTL_ADD && op != EPOLL_CTL_MOD && op != EPOLL_CTL_DEL)) {
         errno = EINVAL;
         EV_ENABLE;
         return -1;

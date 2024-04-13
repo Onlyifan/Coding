@@ -1,4 +1,3 @@
-# ---
 # 语言: None, Cpp, Java, JavaScript, ObjC, Proto, TableGen, TextProto
 Language: Cpp
 BasedOnStyle: LLVM
@@ -166,7 +165,7 @@ ReflowComments: true
 SortIncludes: true
 
 # 允许排序 using 声明
-SortUsingDeclarations: false
+SortUsingDeclarations: true
 
 # 在C风格类型转换后添加空格
 SpaceAfterCStyleCast: false

@@ -1,24 +1,25 @@
 {
-  "CompileFlags":
-    [
-      "-std=c11",
-      "-std=c++17",
-      "-I", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include",
-      "-I", "~/Coding/Auxiliary",
-],
-
-   "EnableCompilationDatabase": false,
-
-  "FormatStyle": 
-    {
-      "BasedOnStyle": "LLVM",
-  "IndentWidth": 4,
-  "UseTab": true
-},
-
-  "Diagnostics":
-    {
-      "Warnings": ["-Wall", "-Wextra"],
-  "Errors": ["-Werror"]
-}
+    "CompileFlags": [
+        "-std=c11",
+        "-std=c++17",
+        "-I",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include",
+        "-I",
+        "~/Coding/Auxiliary",
+    ],
+    "EnableCompilationDatabase": false,
+    "FormatStyle": {
+        "BasedOnStyle": "LLVM",
+        "IndentWidth": 4,
+        "UseTab": true
+    },
+    "Diagnostics": {
+        "Warnings": [
+            "-Wall",
+            "-Wextra"
+        ],
+        "Errors": [
+            "-Werror"
+        ]
+    }
 }

@@ -27,16 +27,16 @@
 #define EPOLL_CTL_MOD 3
 
 typedef union epoll_data {
-    void *ptr;    /* Pointer to user data */
-    int fd;       /* File descriptor (for level-triggered I/O) */
+    void    *ptr; /* Pointer to user data */
+    int      fd;  /* File descriptor (for level-triggered I/O) */
     uint32_t u32; /* Generic 32-bit data type */
     uint64_t u64; /* Generic 64-bit data type */
-    char padding[sizeof(struct kevent) - sizeof(uint32_t)];
+    char     padding[sizeof(struct kevent) - sizeof(uint32_t)];
 } epoll_data_t;
 
 struct epoll_event {
-    uint32_t events;   /* Epoll events */
-    epoll_data_t data; /* User data variable */
+    uint32_t     events; /* Epoll events */
+    epoll_data_t data;   /* User data variable */
 };
 
 #ifdef __cplusplus
@@ -49,5 +49,6 @@ int epoll_wait(int kq, struct epoll_event *events, int max_events, int timeout);
 #ifdef __cplusplus
 }
 #endif
+
 
 #endif // _SYS_EPOLL_H_
