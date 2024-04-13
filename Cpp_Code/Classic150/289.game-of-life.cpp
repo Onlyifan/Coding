@@ -9,29 +9,36 @@
 #include <initializer_list>
 #include <leetcode.h>
 #include <string>
+#include <vector>
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
 class Solution {
   public:
     void gameOfLife(vector<vector<int>> &board) {
-        _firstSize = board.size();
-        _secondSize = board[0].size();
+        _firstSize = board.size( );
+        _secondSize = board[0].size( );
 
         for (int i = 0; i < _firstSize; ++i) {
             for (int j = 0; j < _secondSize; ++j) {
+                
+                
             }
         }
     }
 
-private:
+  private:
+    int  _firstSize;
+    int  _secondSize;
     bool inArea(int i, int j) {
         return i >= 0 && i >= 0 && i < _firstSize && j < _secondSize;
     }
 
-    string _baba;
-    int    _firstSize;
-    int    _secondSize;
+    bool iaAlive(vector<vector<int>>&board,int i,int j){
+
+    }
+    
+
 };
 // @lc code=end
 
