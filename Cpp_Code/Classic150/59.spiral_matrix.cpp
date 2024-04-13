@@ -37,7 +37,6 @@ using namespace std;
 class Solution1 {
   public:
     vector<vector<int>> generateMatrix(int n) {
-
         int direction[4][2]{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
         int x = 0;

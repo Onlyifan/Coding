@@ -23,7 +23,7 @@ class TextQuery {
 
 
   private:
-    std::shared_ptr<std::vector<std::string>> _fileByLine;
+    std::shared_ptr<std::vector<std::string>>                _fileByLine;
     std::map<std::string, std::shared_ptr<std::set<size_t>>> _dict;
 };
 

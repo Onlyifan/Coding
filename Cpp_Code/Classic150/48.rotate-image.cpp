@@ -15,35 +15,37 @@
 
 // @lcpr-template-start
 #include <leetcode.h>
+#include <map>
+#include <memory>
+#include <vector>
+
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
 class Solution {
 public:
   void rotate(vector<vector<int>> &matrix) {
-      for (int i = 0; i < matrix.size( ) / 2; ++i) {
-          for (int j = 0; j < (matrix.size( ) + 1) / 2; ++j) {
-              swapFour(matrix, i, j);
-          }
+    vector<vector<int>> tmp(matrix);
+    for (int i = 0; i < matrix.size() / 2; ++i) {
+      for (int j = 0; j < (matrix.size() + 1) / 2; ++j) {
+        swapFour(matrix, i, j);
       }
+    }
   }
 
-    private:
+private:
+  void swapFour(vector<vector<int>> &matrix, int x, int y) {
+    // 左下, 逆时针
+    int maxIndex = matrix.size() - 1;
+    int tmp = matrix[x][y];
 
-    void swapFour(vector<vector<int>> & matrix, int x, int y) {
-        // 左下, 逆时针
-        int maxIndex = matrix.size( ) - 1;
-        int tmp = matrix[x][y];
-        
-        matrix[x][y] = matrix[maxIndex - y][x];
-        matrix[maxIndex - y][x] = matrix[maxIndex - x][maxIndex - y];
-        matrix[maxIndex - x][maxIndex - y] = matrix[y][maxIndex - x];
-        matrix[y][maxIndex - x] = tmp;
-    }
+    matrix[x][y] = matrix[maxIndex - y][x];
+    matrix[maxIndex - y][x] = matrix[maxIndex - x][maxIndex - y];
+    matrix[maxIndex - x][maxIndex - y] = matrix[y][maxIndex - x];
+    matrix[y][maxIndex - x] = tmp;
+  }
 };
 // @lc code=end
-
-
 
 /*
 // @lcpr case=start
@@ -55,4 +57,3 @@ public:
 // @lcpr case=end
 
  */
-

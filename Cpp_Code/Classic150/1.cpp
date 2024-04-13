@@ -34,4 +34,4 @@
 using namespace std;
 
 vector<int> nums;
-std::copy<int>(nums.begin(), nums.end(), nums.end());
+std::copy<int>(nums.begin( ), nums.end( ), nums.end( ));
