@@ -12,10 +12,10 @@
 class Query_base {
     friend class Query;
 
-  protected:
+protected:
     virtual ~Query_base( ) = default;
 
-  private:
+private:
     virtual QueryResult eval(const TextQuery &) const = 0;
     virtual std::string rep( ) const = 0;
 };
@@ -26,16 +26,21 @@ class Query {
     friend Query operator&(const Query &, const Query &);
     friend Query operator|(const Query &, const Query &);
 
-  public:
+public:
     Query(const std::string &);
-    QueryResult eval(const TextQuery &tq) const { return _pBase->eval(tq); }
-    std::string rep( ) const { return _pBase->rep( ); }
+    QueryResult eval(const TextQuery &tq) const {
+        return _pBase->eval(tq);
+    }
+    std::string rep( ) const {
+        return _pBase->rep( );
+    }
 
-  private:
+private:
     Query(std::shared_ptr<Query_base> pBase)
-        : _pBase(pBase) {}
+        : _pBase(pBase) {
+    }
 
-  private:
+private:
     std::shared_ptr<Query_base> _pBase;
 };
 inline std::ostream &operator<<(std::ostream &os, const Query &q) {
@@ -46,33 +51,42 @@ inline std::ostream &operator<<(std::ostream &os, const Query &q) {
 class WordQuery : public Query_base {
     friend class Query;
 
-  private:
+private:
     WordQuery(const std::string &str)
-        : _word(str) {}
+        : _word(str) {
+    }
 
-  private:
-    QueryResult eval(const TextQuery &tq) const { return tq.query(_word); }
+private:
+    QueryResult eval(const TextQuery &tq) const {
+        return tq.query(_word);
+    }
 
-    std::string rep( ) const { return _word; }
+    std::string rep( ) const {
+        return _word;
+    }
 
-  private:
+private:
     std::string _word;
 };
 inline Query::Query(const std::string &str)
-    : _pBase(new WordQuery(str)) {}
+    : _pBase(new WordQuery(str)) {
+}
 
 
 class NotQuery : public Query_base {
     friend Query operator~(const Query &);
 
-  private:
+private:
     NotQuery(const Query &q)
-        : _query(q) {}
+        : _query(q) {
+    }
 
     QueryResult eval(const TextQuery &) const;
-    std::string rep( ) const { return "~(" + _query.rep( ) + ")"; }
+    std::string rep( ) const {
+        return "~(" + _query.rep( ) + ")";
+    }
 
-  private:
+private:
     Query _query;
 };
 inline Query operator~(const Query &q) {
@@ -81,27 +95,29 @@ inline Query operator~(const Query &q) {
 
 
 class BinaryQuery : public Query_base {
-  protected:
+protected:
     BinaryQuery(const Query &lhs, std::string opSymbol, const Query &rhs)
         : _lhs(lhs)
         , _opSymbol(opSymbol)
-        , _rhs(rhs) {}
+        , _rhs(rhs) {
+    }
     std::string rep( ) const {
         return "(" + _lhs.rep( ) + " " + _opSymbol + " " + _rhs.rep( ) + ")";
     }
 
-  protected:
-    Query _lhs;
-    Query _rhs;
+protected:
+    Query       _lhs;
     std::string _opSymbol;
+    Query       _rhs;
 };
 
 class AndQuery : public BinaryQuery {
     friend Query operator&(const Query &, const Query &);
 
-  private:
+private:
     AndQuery(const Query &lhs, const Query &rhs)
-        : BinaryQuery(lhs, "&&", rhs) {}
+        : BinaryQuery(lhs, "&&", rhs) {
+    }
 
     QueryResult eval(const TextQuery &) const;
 };
@@ -113,9 +129,10 @@ inline Query operator&(const Query &lhs, const Query &rhs) {
 class OrQuery : public BinaryQuery {
     friend Query operator|(const Query &, const Query &);
 
-  private:
+private:
     OrQuery(const Query &lhs, const Query &rhs)
-        : BinaryQuery(lhs, "||", rhs) {}
+        : BinaryQuery(lhs, "||", rhs) {
+    }
 
     QueryResult eval(const TextQuery &) const;
 };

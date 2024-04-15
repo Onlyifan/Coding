@@ -14,7 +14,7 @@ static std::string cleanStr(std::string str) {
 
 std::string render::highlightSubStr(const std::string &originalStr,
                                     const std::string &targetSubStr) {
-    std::string cleandSubStr(cleanStr(targetSubStr));
+    std::string        cleandSubStr(cleanStr(targetSubStr));
     std::istringstream iss(cleandSubStr);
 
 
@@ -23,7 +23,7 @@ std::string render::highlightSubStr(const std::string &originalStr,
     std::transform(loweredOriginalStr.begin( ), loweredOriginalStr.end( ),
                    loweredOriginalStr.begin( ), ::tolower);
 
-    int colorNum = 0;
+    int         colorNum = 0;
     std::string subStr;
     while (iss >> subStr) {
         std::string loweredSubStr(subStr);
@@ -33,11 +33,8 @@ std::string render::highlightSubStr(const std::string &originalStr,
         size_t currentPos = 0;
         size_t nextPos;
 
-        while ((nextPos = loweredOriginalStr.find(loweredSubStr, currentPos)) !=
-               std::string::npos) {
-            if (((nextPos == 0) || !isalnum(loweredOriginalStr[nextPos - 1])) &&
-                ((nextPos + loweredSubStr.size( ) == loweredOriginalStr.size( )) ||
-                 !isalnum(loweredOriginalStr[nextPos + loweredSubStr.size( )]))) {
+        while ((nextPos = loweredOriginalStr.find(loweredSubStr, currentPos)) != std::string::npos) {
+            if (((nextPos == 0) || !isalnum(loweredOriginalStr[nextPos - 1])) && ((nextPos + loweredSubStr.size( ) == loweredOriginalStr.size( )) || !isalnum(loweredOriginalStr[nextPos + loweredSubStr.size( )]))) {
                 highlightedStr.insert(nextPos, Color[colorNum % Color.size( )]);
                 loweredOriginalStr.insert(nextPos, Color[colorNum % Color.size( )]);
                 nextPos += strlen(Color[colorNum % Color.size( )]) + loweredSubStr.size( );

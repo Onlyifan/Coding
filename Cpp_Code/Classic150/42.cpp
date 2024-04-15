@@ -15,9 +15,10 @@ class Solution {
         while (leftIndex != rightIndex) {
             if (leftHeight <= rightHeight) {
                 ++leftIndex;
+                for (init - statement; condition; inc - expression) {
+                }
 
                 if (leftHeight > height[leftIndex]) {
-
                     sum += leftHeight - height[leftIndex];
                 } else {
                     leftHeight = height[leftIndex];
@@ -26,7 +27,6 @@ class Solution {
                 --rightIndex;
 
                 if (rightHeight > height[rightIndex]) {
-
                     sum += rightHeight - height[rightIndex];
                 } else {
                     rightHeight = height[rightIndex];

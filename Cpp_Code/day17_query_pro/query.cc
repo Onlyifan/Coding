@@ -6,7 +6,7 @@ using std::set;
 using std::shared_ptr;
 
 QueryResult NotQuery::eval(const TextQuery &tq) const {
-    QueryResult result = _query.eval(tq);
+    QueryResult                  result = _query.eval(tq);
     shared_ptr<set<std::size_t>> pSet(new set<size_t>);
 
     for (size_t i = 0; i != result.size( ); ++i) {
@@ -35,13 +35,12 @@ QueryResult AndQuery::eval(const TextQuery &tq) const {
     return QueryResult(rep( ), pSet, lResult.getFile( ));
 }
 QueryResult OrQuery::eval(const TextQuery &tq) const {
-
     QueryResult lResult = _lhs.eval(tq);
     QueryResult rResult = _rhs.eval(tq);
 
     shared_ptr<set<std::size_t>> pSet(new set<size_t>);
-    pSet->insert(lResult.begin(), lResult.end());
-    pSet->insert(rResult.begin(), rResult.end());
+    pSet->insert(lResult.begin( ), lResult.end( ));
+    pSet->insert(rResult.begin( ), rResult.end( ));
 
 
     return QueryResult(rep( ), pSet, lResult.getFile( ));

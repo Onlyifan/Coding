@@ -1,10 +1,10 @@
 # 语言: None, Cpp, Java, JavaScript, ObjC, Proto, TableGen, TextProto
 Language: Cpp
-BasedOnStyle: LLVM
+BasedOnStyle: Microsoft
 
 # 访问说明符(public、private等)的偏移
 # IndentAccessModifiers: false
-AccessModifierOffset: -2
+AccessModifierOffset: -4
 
 # 开括号(开圆括号、开尖括号、开方括号)后的对齐: Align, DontAlign, AlwaysBreak(总是在开括号后换行)
 AlignAfterOpenBracket: Align
@@ -105,7 +105,7 @@ BreakBeforeTernaryOperators: false
 # 在构造函数的初始化列表的冒号后换行
 # BreakConstructorInitializers: AfterColon
 
-  # 类构造函数的初始化列表按每个成员变量一行
+# 类构造函数的初始化列表按每个成员变量一行
 BreakConstructorInitializersBeforeComma: true
 
 #BreakInheritanceList: AfterColon
@@ -118,7 +118,7 @@ ColumnLimit: 0
 CompactNamespaces: true
 
 # 构造函数的初始化列表要么都在同一行，要么都各自一行
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
 
 # 构造函数的初始化列表的缩进宽度
 ConstructorInitializerIndentWidth: 4
