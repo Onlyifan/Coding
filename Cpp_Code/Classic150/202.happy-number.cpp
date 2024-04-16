@@ -11,7 +11,10 @@
 using namespace std;
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+
+
+// 用哈希表记录已经出现过的数
+class Solution1 {
 public:
     bool isHappy(int n) {
         unordered_set<int>  occured;
@@ -42,6 +45,40 @@ public:
 
 };
 
+
+// 用数组记录已经出现过的数
+class Solution {
+public:
+    bool isHappy(int n) {
+        bool occured[731];
+
+        while (n != 1) {
+            n = calculate(n);
+            if (occured[n] == true) {
+                return false;
+            }
+            occured[n] = true;
+        }
+
+        return true;
+    }
+
+    int calculate(int n) {
+        int ret = 0;
+        while (n != 0) {
+            int currentBit = n % 10;
+            ret += currentBit * currentBit;
+            n /= 10;
+        }
+
+        return ret;
+    }
+};
+
+int main(){
+    Solution1 s;
+    s.isHappy(1999);
+}
 // @lc code=end
 
 

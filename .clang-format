@@ -1,6 +1,6 @@
 # 语言: None, Cpp, Java, JavaScript, ObjC, Proto, TableGen, TextProto
 Language: Cpp
-BasedOnStyle: Microsoft
+BasedOnStyle: LLVM
 
 # 访问说明符(public、private等)的偏移
 # IndentAccessModifiers: false
@@ -13,7 +13,7 @@ AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
 
 # 连续声明时，对齐所有声明的变量名
-AlignConsecutiveDeclarations: true
+AlignConsecutiveDeclarations: false
 
 # 右对齐逃脱换行(使用反斜杠换行)的反斜杠
 AlignEscapedNewlines: Right
@@ -34,7 +34,7 @@ AllowShortBlocksOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine: true
 
 # 允许短的函数放在同一行: None, InlineOnly(定义在类中), Empty(空函数), Inline(定义在类中，空函数), All
-AllowShortFunctionsOnASingleLine: None
+AllowShortFunctionsOnASingleLine: Empty
 
 # 允许短的if语句保持在同一行
 AllowShortIfStatementsOnASingleLine: true
@@ -58,6 +58,12 @@ BinPackArguments: true
 
 # false表示所有形参要么都在同一行，要么都各自一行
 BinPackParameters: true
+
+# 在大括号前换行: Attach(始终将大括号附加到周围的上下文), Linux(除函数、命名空间和类定义，与Attach类似), 
+#   Mozilla(除枚举、函数、记录定义，与Attach类似), Stroustrup(除函数定义、catch、else，与Attach类似), 
+#   Allman(总是在大括号前换行), GNU(总是在大括号前换行，并对于控制语句的大括号增加额外的缩进), WebKit(在函数前换行), Custom
+#   注：这里认为语句块也属于函数
+BreakBeforeBraces: Custom
 
 # 大括号换行，只有当BreakBeforeBraces设置为Custom时才有效
 BraceWrapping:
@@ -93,12 +99,6 @@ BraceWrapping:
 # 在二元运算符前换行: None(在操作符后换行), NonAssignment(在非赋值的操作符前换行), All(在操作符前换行)
 BreakBeforeBinaryOperators: NonAssignment
 
-# 在大括号前换行: Attach(始终将大括号附加到周围的上下文), Linux(除函数、命名空间和类定义，与Attach类似), 
-#   Mozilla(除枚举、函数、记录定义，与Attach类似), Stroustrup(除函数定义、catch、else，与Attach类似), 
-#   Allman(总是在大括号前换行), GNU(总是在大括号前换行，并对于控制语句的大括号增加额外的缩进), WebKit(在函数前换行), Custom
-#   注：这里认为语句块也属于函数
-BreakBeforeBraces: Custom
-
 # 在三元运算符前换行
 BreakBeforeTernaryOperators: false
 
@@ -113,12 +113,12 @@ BreakConstructorInitializersBeforeComma: true
 BreakStringLiterals: false
 
 # 每行字符的限制，0表示没有限制
-ColumnLimit: 0
+ColumnLimit: 100
 
 CompactNamespaces: true
 
 # 构造函数的初始化列表要么都在同一行，要么都各自一行
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
 
 # 构造函数的初始化列表的缩进宽度
 ConstructorInitializerIndentWidth: 4
@@ -127,7 +127,7 @@ ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
 
 # 去除C++11的列表初始化的大括号{后和}前的空格
-Cpp11BracedListStyle: true
+Cpp11BracedListStyle: false
 
 # 继承最常用的指针和引用的对齐方式
 DerivePointerAlignment: false

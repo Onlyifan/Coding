@@ -1,6 +1,7 @@
 #ifndef _SYS_EPOLL_H_
 #define _SYS_EPOLL_H_
 
+
 #include <sys/event.h>
 
 
@@ -42,10 +43,12 @@ struct epoll_event {
 #ifdef __cplusplus
 extern "C" {
 #endif
-int epoll_create(int size);
-int epoll_create1(int flags);
-int epoll_ctl(int kq, int op, int fd, struct epoll_event *event);
-int epoll_wait(int kq, struct epoll_event *events, int max_events, int timeout);
+
+extern int epoll_create(int size);
+extern int epoll_create1(int flags);
+extern int epoll_ctl(int kq, int op, int fd, struct epoll_event *event);
+extern int epoll_wait(int kq, struct epoll_event *events, int max_events, int timeout);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,7 +1,7 @@
+#include "workflow/WFFacilities.h"
 
-#include <workflow/WFFacilities.h>
-static WFFacilities::WaitGroup wait_group(1); // wait_group的参数用来表示有多少个任务还没完成
-void                           sig_handler(int signo) {
+static WFFacilities::WaitGroup wait_group(3); // wait_group的参数用来表示有多少个任务还没完成
+void sig_handler(int signo) {
     wait_group.done( );
     // done方法表示完成了一个任务
 }
