@@ -15,7 +15,8 @@ extern "C" {
 #endif
 
 extern int timerfd_create(clockid_t clock_id, int flags);
-extern int timerfd_settime(int ufd, int flags, const struct itimerspec *utmr, struct itimerspec *otmr);
+extern int timerfd_settime(int ufd, int flags, const struct itimerspec *utmr,
+                           struct itimerspec *otmr);
 extern int timerfd_gettime(int ufd, struct itimerspec *otmr);
 
 #ifdef __cplusplus
