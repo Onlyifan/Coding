@@ -19,8 +19,13 @@ public:
         for (auto &num : nums) {
             auto prefixIt = unionNums.find(num - 1);
             auto suffixIt = unionNums.find(num + 1);
-            if (prefixIt != unionNums.end() && prefixIt->second == false && suffixIt != unionNums.end() && suffixIt->second == true) {
-                unionNums.erase()
+
+            bool r1 = prefixIt != unionNums.end( ) && prefixIt->second == false;
+            bool r2 = prefixIt != unionNums.end( ) && prefixIt->second == true;
+
+            if (r1 && r2) {
+                
+            }
 
 
             }
