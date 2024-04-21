@@ -1,9 +1,21 @@
 #include <iostream>
-using namespace std;
+#include <set>
+using namespace std; 
 
 int main( ) {
-    cout << "Size of int: " << sizeof(int) << " bytes" << endl;
-    cout << "Size of long: " << sizeof(long) << " bytes" << endl;
-    cout << "Size of long long: " << sizeof(long long) << " bytes" << endl;
+
+    set<bool> mainset;
+
+    mainset.insert(true);
+    mainset.insert(false);
+    mainset.insert(true);
+
+
+    for (auto &i : mainset) {
+        cout << i << endl;
+    }
+
+    
+
     return 0;
 }

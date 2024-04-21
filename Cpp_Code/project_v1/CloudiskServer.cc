@@ -89,11 +89,11 @@ void CloudiskServer::loadUserRegisterModule( ) {
             cout << "mi wen:" << encodedPassword << endl;
 
             // 3. 从数据库MySQL中读取用户信息进行登录验证
-            string mysqlurl("mysql://root:@127.0.0.1:3306");
+            string mysqlurl("mysql://root:@localhost");
             auto mysqlTask = WFTaskFactory::create_mysql_task(
-                mysqlurl, 1, std::bind(&Function::MYSQL_CheckUser_Callback, placeholders::_1, username, salt, encodedPassword));
-            string sql("select user_pwd from cloudisk.tbl_user where user_name = '");
-            sql += username + "' limit 1";
+                mysqlurl, 1, std::bind(&Function::Signup_Callback, placeholders::_1));
+            string sql("INSERT INTO cloudisk.tbl_user(user_name, user_pwd) VALUES('");
+            sql += username + "', '" + encodedPassword + "')";
             cout << "sql:\n"
                  << sql << endl;
             mysqlTask->get_req( )->set_query(sql);
@@ -228,12 +228,10 @@ void CloudiskServer::loadFileDownloadModule( ) {
 
         // 将下载业务从服务器中分离出去，之后只需要产生一个下载链接就可以了
         // 这要求我们还需要去部署一个下载服务器
-        string downloadURL = "http://192.168.190.128:8080/" + filename;
+        string downloadURL = "http://localhost:8080/" + filename;
         resp->String(downloadURL);
     });
 }
-
-
 
 
 // callback
@@ -241,9 +239,6 @@ int Function::MYSQL_CheckResult(WFMySQLTask *mysqltask) {
     int state = mysqltask->get_state( );
     int error = mysqltask->get_error( );
     if (state != WFT_STATE_SUCCESS) {
-
-        
-
         printf("%s\n", WFGlobal::get_error_string(state, error));
         return -1;
     }
@@ -258,13 +253,30 @@ int Function::MYSQL_CheckResult(WFMySQLTask *mysqltask) {
     return 0;
 }
 
+
+void Function::Signup_Callback(WFMySQLTask *mysqltask) {
+    HttpResp *resp = (HttpResp *)series_of(mysqltask)->get_context( );
+
+    if (MYSQL_CheckResult(mysqltask)) {
+        resp->String("Singup/Login Failed");
+        return;
+    }
+
+    MySQLResultCursor cursor(mysqltask->get_resp( ));
+    if (cursor.get_cursor_status( ) == MYSQL_STATUS_OK) {
+        // 2. 成功写入数据库了
+        printf("Query OK. %llu row affected.\n", cursor.get_affected_rows( ));
+        resp->String("SUCCESS");
+    } else {
+        resp->String("Singup/Login Failed");
+    }
+}
+
+
 void Function::MYSQL_CheckUser_Callback(WFMySQLTask *mysqlTask, const std::string &username, const std::string &salt, const std::string &encodedPassword) {
     int ret = MYSQL_CheckResult(mysqlTask);
-
-
-
-
     HttpResp *resp = (HttpResp *)series_of(mysqlTask)->get_context( );
+
     if (ret != 0) {
         resp->String("Singup Failed");
         return;
@@ -286,6 +298,7 @@ void Function::MYSQL_CheckUser_Callback(WFMySQLTask *mysqlTask, const std::strin
             Token token(username, salt);
             string tokenStr = token.genToken( );
             // 3.2构造一个JSON对象，发送给客户端
+            using Json = nlohmann::json;
             Json msg;
             Json data;
             data["Token"] = tokenStr;
@@ -295,11 +308,15 @@ void Function::MYSQL_CheckUser_Callback(WFMySQLTask *mysqlTask, const std::strin
             resp->String(msg.dump( )); // 序列化之后，发送给客户端
 
             // 3.3 将Token保存到数据库中
-            auto nextTask = WFTaskFactory::create_mysql_task("mysql://root:@127.0.0.1:3306", 1, nullptr);
+            //
+            auto nextTask = WFTaskFactory::create_mysql_task("mysql://root:@localhost", 1, nullptr);
             string sql("REPLACE INTO cloudisk.tbl_user_token(user_name, user_token)VALUES('");
             sql += username + "', '" + tokenStr + "')";
             nextTask->get_req( )->set_query(sql);
-            series_of(mysqlTask)->push_back(nextTask);
+            cout << "token sql:\n"
+                 << sql << "\n";
+            series_of(mysqlTask)
+                ->push_back(nextTask);
 
         } else {
             // 登录失败的情况
@@ -348,8 +365,6 @@ void Function::MYSQL_LoadUserInfo_Callback(WFMySQLTask *mysqltask, const std::st
     HttpResp *resp = (HttpResp *)series_of(mysqltask)->get_context( );
     if (ret != 0) {
         resp->String("Singup Failed");
-
-
 
         return;
     }

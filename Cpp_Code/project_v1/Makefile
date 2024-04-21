@@ -2,7 +2,7 @@ INCLUDES:=./  ./include
 SRCS:=$(wildcard *.cc) 
 LIBS:=  -lwfrest -lworkflow -lssl -lcrypto
 OBJS:=$(patsubst %.cc, %.o, $(SRCS))
-SERVER:= CloudiskServer
+SERVER:= CloudiskServer.out
 
 # 目标 : 依赖
 $(SERVER): main.o CloudiskServer.o Token.o Hash.o
