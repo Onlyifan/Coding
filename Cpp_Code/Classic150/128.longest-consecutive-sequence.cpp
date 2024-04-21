@@ -7,35 +7,47 @@
 
 
 // @lcpr-template-start
+#include <algorithm>
 #include <leetcode.h>
+#include <unordered_set>
 using namespace std;
+
 // @lcpr-template-end
 // @lc code=start
 class Solution {
 public:
-    int longestConsecutive(vector<int>& nums) {
-        unordered_map<int, bool> unionNums;
+    int longestConsecutive(vector<int> &nums) {
+        unordered_set<int> hashNums;
+
 
         for (auto &num : nums) {
-            auto prefixIt = unionNums.find(num - 1);
-            auto suffixIt = unionNums.find(num + 1);
-
-            bool r1 = prefixIt != unionNums.end( ) && prefixIt->second == false;
-            bool r2 = prefixIt != unionNums.end( ) && prefixIt->second == true;
-
-            if (r1 && r2) {
-                
-            }
-
-
-            }
-
+            hashNums.emplace(num);
         }
 
+        int length = 0;
+
+        //第二次要遍历hash_set, 因为天然去重
+        for (auto &num : hashNums) {
+            if (hashNums.count(num - 1)) {
+                continue;
+            }
+
+            if (!hashNums.count(num + length)) {
+                continue;
+            }
+
+            int tmp = 1;
+            while (hashNums.count(num + tmp)) {
+                // hashNums.erase(num + tmp);
+                ++tmp;
+            }
+            length = max(length, tmp);
+        }
+
+        return length;
     }
 };
 // @lc code=end
-
 
 
 /*
@@ -48,4 +60,3 @@ public:
 // @lcpr case=end
 
  */
-
