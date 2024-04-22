@@ -6,9 +6,14 @@ using namespace AlibabaCloud::OSS;
 
 int main( ) {
     OSSInfo ossInfo;
-    RabbitMQInfo mqInfo;
-
 #include "/Users/Onlyifan/.ssh/AliOSSKey"
+
+
+    RabbitMQInfo mqInfo;
+    mqInfo.RoutingKey = "oss";
+    mqInfo.RabbitURL = "amqp://guest:guest@127.0.0.1:5672";
+    mqInfo.Exchange = "uploadserver.trans";
+    mqInfo.Queue = "uploadserver.trans.oss";
 
 
     // 初始化网络资源
