@@ -1,7 +1,7 @@
 -- 创建文件表
 CREATE TABLE `tbl_file` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `file_sha1` char(40) NOT NULL DEFAULT '' COMMENT '文件hash',
+  `file_sha1` char(46) NOT NULL DEFAULT '' COMMENT '文件hash',
   `file_name` varchar(256) NOT NULL DEFAULT '' COMMENT '文件名',
   `file_size` bigint(20) DEFAULT '0' COMMENT '文件大小',
   `file_addr` varchar(1024) NOT NULL DEFAULT '' COMMENT '文件存储位置',

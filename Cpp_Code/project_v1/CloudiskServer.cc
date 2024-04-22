@@ -1,10 +1,15 @@
 #include "CloudiskServer.h"
 #include "Hash.h"
 #include "Token.h"
+#include "alibabacloud/oss/OssClient.h"
 #include "unixHeader.h"
 #include "wfrest/HttpMsg.h"
+#include "workflow/SubTask.h"
 
+#include <cstdio>
 #include <functional>
+#include <string>
+#include <utility>
 #include <wfrest/json.hpp>
 #include <workflow/MySQLMessage.h>
 #include <workflow/MySQLResult.h>
@@ -15,10 +20,17 @@ using namespace wfrest;
 using Function = CloudiskServer::Function;
 using namespace std;
 using namespace protocol;
+using namespace AlibabaCloud::OSS;
 
+CloudiskServer::CloudiskServer(int cnt, OSSInfo &&ossInfo, RabbitMQInfo &&mqInfo, const AlibabaCloud::OSS::ClientConfiguration &conf)
+    : _waitGroup(cnt)
+    , _ossInfo(std::move(ossInfo))
+    , _mqInfo(std::move(mqInfo))
+    , _client(_ossInfo.EndPoint, _ossInfo.AccessKeyID, _ossInfo.AccessKeySecret, conf)
+    , _channel(AmqpClient::Channel::Create( )) {}
 
-void CloudiskServer::abc(const wfrest::HttpReq *req, wfrest::HttpResp *resp, const string &path) {
-    resp->File(path);
+CloudiskServer::~CloudiskServer( ) {
+    ShutdownSdk( );
 }
 
 
@@ -179,7 +191,7 @@ void CloudiskServer::loadFileQueryModule( ) {
 
 void CloudiskServer::loadFileUploadModule( ) {
     _httpserver.POST("/file/upload",
-                     [](const HttpReq *req, HttpResp *resp, SeriesWork *series) {
+                     [this](const HttpReq *req, HttpResp *resp, SeriesWork *series) {
                          // 1. 解析请求
                          string username = req->query("username");
                          string tokenStr = req->query("token");
@@ -207,12 +219,16 @@ void CloudiskServer::loadFileUploadModule( ) {
                              Hash hash(filepath);
                              string filehash = hash.sha1( );
                              cout << "filehash:" << filehash << endl;
+
+                             // 重命名文件名字为hash
+                             //  rename(const char *old, const char *new);
+
                              // 6.将文件相关信息写入数据库MySQL中
-                             string mysqlurl("mysql://root:123@localhost");
-                             auto mysqlTask = WFTaskFactory::create_mysql_task(mysqlurl, 1, nullptr);
+                             string mysqlurl("mysql://root:@localhost");
+                             auto mysqlTask = WFTaskFactory::create_mysql_task(mysqlurl, 1, std::bind(&Function::OSS_Upload_Callback, std::placeholders::_1, this, filehash, filename));
                              string sql("INSERT INTO cloudisk.tbl_user_file(user_name,file_sha1,file_size,file_name)VALUES('");
                              sql += username + "','" + filehash + "', " + std::to_string(content.size( )) + ",'" + filename + "')";
-                             cout << "\nsql:\n"
+                             cout << "\nupload file sql:\n"
                                   << sql << endl;
                              mysqlTask->get_req( )->set_query(sql);
                              series->push_back(mysqlTask);
@@ -222,14 +238,29 @@ void CloudiskServer::loadFileUploadModule( ) {
 
 
 void CloudiskServer::loadFileDownloadModule( ) {
-    _httpserver.GET("/file/downloadurl", [](const HttpReq *req, HttpResp *resp) {
+    _httpserver.GET("/file/downloadurl", [this](const HttpReq *req, HttpResp *resp) {
+        cout << req->get_request_uri( ) << endl;
+
         string filename = req->query("filename");
         cout << "filename: " << filename << endl;
 
         // 将下载业务从服务器中分离出去，之后只需要产生一个下载链接就可以了
         // 这要求我们还需要去部署一个下载服务器
         string downloadURL = "http://localhost:8080/" + filename;
-        resp->String(downloadURL);
+
+        time_t expire = time(nullptr) + 600;
+
+        // filename应该改成哈希值
+        StringOutcome outcome = this->_client.GeneratePresignedUrl(this->_ossInfo.Bucket, "dir1/" + req->query("filehash"), expire, Http::Get);
+        if (outcome.isSuccess( )) {
+            cerr << outcome.result( ) << "\n";
+            resp->String(outcome.result( ));
+        } else {
+            cerr << "error!\n";
+        }
+
+
+        // resp->String(downloadURL);
     });
 }
 
@@ -290,8 +321,8 @@ void Function::MYSQL_CheckUser_Callback(WFMySQLTask *mysqlTask, const std::strin
     } else if (cursor.get_cursor_status( ) == MYSQL_STATUS_GET_RESULT) {
         // 3. 读取数据
         vector<vector<MySQLCell>> matrix;
-        cursor.fetch_all(matrix);
-        string M = matrix[0][0].as_string( );
+        cursor.fetch_all(matrix);             // affected
+        string M = matrix[0][0].as_string( ); // user_pwd
         cout << "M:" << M << endl;
         if (encodedPassword == M) {
             // 3.1登录成功的情况, 生成Token信息
@@ -342,6 +373,7 @@ void Function::MYSQL_LoadFile_Callback(WFMySQLTask *mysqltask) {
         // 读操作,获取用户的
         vector<vector<MySQLCell>> matrix;
         cursor.fetch_all(matrix);
+        using Json = nlohmann::json;
         Json msgArr;
         for (size_t i = 0; i < matrix.size( ); ++i) {
             Json row;
@@ -377,6 +409,7 @@ void Function::MYSQL_LoadUserInfo_Callback(WFMySQLTask *mysqltask, const std::st
         vector<vector<MySQLCell>> matrix;
         cursor.fetch_all(matrix);
         string signupAt = matrix[0][0].as_string( );
+        using Json = nlohmann::json;
         Json msg;
         Json data;
         data["Username"] = username;
@@ -387,5 +420,15 @@ void Function::MYSQL_LoadUserInfo_Callback(WFMySQLTask *mysqltask, const std::st
     } else {
         // 没有读取到正确的信息
         resp->String("error");
+    }
+}
+
+
+void Function::OSS_Upload_Callback(WFMySQLTask *mysqltask, CloudiskServer *server, const std::string &hash, const std::string &filename) {
+    OssClient &client = server->_client;
+    PutObjectOutcome outcome = client.PutObject(server->_ossInfo.Bucket, "dir1/" + hash, "tmp/" + filename);
+    if (!outcome.isSuccess( )) {
+        cerr << "code = " << outcome.error( ).Code( )
+             << ",message = " << outcome.error( ).Message( ) << "\n";
     }
 }
