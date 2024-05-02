@@ -111,7 +111,6 @@ public:
             }
         }
 
-
         for (int i = 1; i < params.size( ); ++i) {
             auto redisTask = WFTaskFactory::create_redis_task("redis://127.0.0.1:6379", 0, redisCallback);
 
@@ -129,6 +128,7 @@ public:
         if (index == 0) {
             if (!value.is_array( )) {
                 cerr << "redis task result error!\n";
+                return;
             }
 
             for (size_t i = 0; i != value.arr_size( ); ++i) {

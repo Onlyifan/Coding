@@ -27,7 +27,6 @@ struct RabbitMQInfo {
     std::string RoutingKey;
 };
 
-
 class CloudiskServer {
 public:
     class Function {

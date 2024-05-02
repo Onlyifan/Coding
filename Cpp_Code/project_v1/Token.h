@@ -13,7 +13,7 @@ public:
 
     string genToken() const;
 
-    ~Token() {}
+    ~Token()  = default;
 
 private:
     string _username;

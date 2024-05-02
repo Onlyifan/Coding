@@ -6,7 +6,6 @@
 #include "wfrest/HttpMsg.h"
 #include "workflow/SubTask.h"
 
-#include <cstdio>
 #include <functional>
 #include <string>
 #include <utility>
@@ -21,6 +20,7 @@ using Function = CloudiskServer::Function;
 using namespace std;
 using namespace protocol;
 using namespace AlibabaCloud::OSS;
+
 
 CloudiskServer::CloudiskServer(int cnt, OSSInfo &&ossInfo, RabbitMQInfo &&mqInfo, const AlibabaCloud::OSS::ClientConfiguration &conf)
     : _waitGroup(cnt)
@@ -225,13 +225,16 @@ void CloudiskServer::loadFileUploadModule( ) {
 
                              // 6.将文件相关信息写入数据库MySQL中
                              string mysqlurl("mysql://root:@localhost");
-                             auto mysqlTask = WFTaskFactory::create_mysql_task(mysqlurl, 1, std::bind(&Function::OSS_Upload_Callback, std::placeholders::_1, this, filehash, filename));
+                             auto mysqlTask = WFTaskFactory::create_mysql_task(mysqlurl, 1, nullptr);
                              string sql("INSERT INTO cloudisk.tbl_user_file(user_name,file_sha1,file_size,file_name)VALUES('");
                              sql += username + "','" + filehash + "', " + std::to_string(content.size( )) + ",'" + filename + "')";
                              cout << "\nupload file sql:\n"
                                   << sql << endl;
                              mysqlTask->get_req( )->set_query(sql);
                              series->push_back(mysqlTask);
+
+                             AmqpClient::BasicMessage::ptr_t message = AmqpClient::BasicMessage::Create("dir1/" + filehash + "\n" + "tmp/" + filename);
+                             this->_channel->BasicPublish(this->_mqInfo.Exchange, this->_mqInfo.RoutingKey, message);
                          }
                      });
 }
@@ -258,8 +261,6 @@ void CloudiskServer::loadFileDownloadModule( ) {
         } else {
             cerr << "error!\n";
         }
-
-
     });
 }
 
@@ -285,7 +286,7 @@ int Function::MYSQL_CheckResult(WFMySQLTask *mysqltask) {
 
 
 void Function::Signup_Callback(WFMySQLTask *mysqltask) {
-    HttpResp *resp = (HttpResp *)series_of(mysqltask)->get_context( );
+    auto resp = (HttpResp *)series_of(mysqltask)->get_context( );
 
     if (MYSQL_CheckResult(mysqltask)) {
         resp->String("Singup/Login Failed");
@@ -305,7 +306,7 @@ void Function::Signup_Callback(WFMySQLTask *mysqltask) {
 
 void Function::MYSQL_CheckUser_Callback(WFMySQLTask *mysqlTask, const std::string &username, const std::string &salt, const std::string &encodedPassword) {
     int ret = MYSQL_CheckResult(mysqlTask);
-    HttpResp *resp = (HttpResp *)series_of(mysqlTask)->get_context( );
+    auto resp = (HttpResp *)series_of(mysqlTask)->get_context( );
 
     if (ret != 0) {
         resp->String("Singup Failed");
@@ -358,7 +359,7 @@ void Function::MYSQL_CheckUser_Callback(WFMySQLTask *mysqlTask, const std::strin
 
 void Function::MYSQL_LoadFile_Callback(WFMySQLTask *mysqltask) {
     int ret = MYSQL_CheckResult(mysqltask);
-    HttpResp *resp = (HttpResp *)series_of(mysqltask)->get_context( );
+    auto resp = (HttpResp *)series_of(mysqltask)->get_context( );
     if (ret != 0) {
         resp->String("Singup Failed");
         return;
@@ -374,13 +375,14 @@ void Function::MYSQL_LoadFile_Callback(WFMySQLTask *mysqltask) {
         cursor.fetch_all(matrix);
         using Json = nlohmann::json;
         Json msgArr;
-        for (size_t i = 0; i < matrix.size( ); ++i) {
+        // for (size_t i = 0; i < matrix.size( ); ++i) {
+        for (auto &elem : matrix) {
             Json row;
-            row["FileHash"] = matrix[i][0].as_string( );
-            row["FileName"] = matrix[i][1].as_string( );
-            row["FileSize"] = matrix[i][2].as_ulonglong( );
-            row["UploadAt"] = matrix[i][3].as_datetime( );
-            row["LastUpdated"] = matrix[i][4].as_datetime( );
+            row["FileHash"] = elem[0].as_string( );
+            row["FileName"] = elem[1].as_string( );
+            row["FileSize"] = elem[2].as_ulonglong( );
+            row["UploadAt"] = elem[3].as_datetime( );
+            row["LastUpdated"] = elem[4].as_datetime( );
             msgArr.push_back(row); // 在数组中添加一个元素,使用push_back即可
         }
         resp->String(msgArr.dump( ));
@@ -393,7 +395,7 @@ void Function::MYSQL_LoadFile_Callback(WFMySQLTask *mysqltask) {
 
 void Function::MYSQL_LoadUserInfo_Callback(WFMySQLTask *mysqltask, const std::string &username) {
     int ret = MYSQL_CheckResult(mysqltask);
-    HttpResp *resp = (HttpResp *)series_of(mysqltask)->get_context( );
+    auto resp = (HttpResp *)series_of(mysqltask)->get_context( );
     if (ret != 0) {
         resp->String("Singup Failed");
 

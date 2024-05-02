@@ -1,13 +1,14 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include <Accelerate/Accelerate.h>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
 class Solution {
-  public:
+public:
     void merge(vector<int> &nums1, int m, vector<int> &nums2, int n) {
         if (n == 0) {
             return;

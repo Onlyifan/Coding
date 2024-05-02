@@ -1,5 +1,4 @@
 #include "CloudiskServer.h"
-#include <iostream>
 #include <string>
 
 using namespace AlibabaCloud::OSS;
@@ -28,5 +27,6 @@ int main( ) {
     CloudiskServer cloudiskServer(1, std::move(ossInfo), std::move(mqInfo), conf);
     cloudiskServer.loadModules( );
     cloudiskServer.start(1234);
+    
     return 0;
 }
